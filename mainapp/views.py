@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from .forms import UserForm
+from mainapp.sample import yfinancesymb,test,getmystocks
+from mainapp.models import UserStockDetails
 
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect, HttpResponse
@@ -7,6 +9,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.shortcuts import redirect
+import datetime
 
 # Create your views here.
 def index(req):
@@ -45,21 +48,51 @@ def user_logIn(request):
 
 @login_required
 def welcome(req):
-    return render(req,'mainapp/welcome.html')
+    mystocks=getmystocks(req.user)
+    return render(req,'mainapp/welcome.html',{'mystocks':mystocks})
+
+@login_required
+def addstock(req):
+    if req.method == 'POST':
+        symbol = req.POST.get('symbol')
+        purchasedate = req.POST.get('pdate')
+        quantity = req.POST.get('quantity')
+        current_user = req.user
+        if(test(symbol)):
+            today = datetime.datetime.today().isoformat()
+            if(purchasedate<=today):
+                print(current_user,symbol,purchasedate,quantity)
+                tx=UserStockDetails(user=current_user,purchaseDate=purchasedate,symbol=symbol,quantity=quantity)
+                tx.save()
+            else:
+                messages.error(req,'Invalid Date')
+
+        else:
+            messages.error(req,'Invalid Ticker Symbol')
+
+    return render(req,'mainapp/addstock.html')
+
+@login_required
+def result(req):
+    if req.method == 'POST':
+        script, div = yfinancesymb(req.POST['symbol'])
+    # myDict={'script':str(resultString)}
+    return render(req, 'mainapp/result.html',
+            {'script' : script , 'div' : div} )
+    # return render(req,'mainapp/result.html')
+
+@login_required
+def user_logout(request):
+    # Log out the user.
+    logout(request)
+    # Return to homepage.
+    return HttpResponseRedirect(reverse('index'))
 
 def signUp(req):
 
     if req.method == 'POST':
         user_form = UserForm(data=req.POST)
         if user_form.is_valid():
-            # username = req.POST.get('usrname')
-            # fname = req.POST.get('fname')
-            # lname = req.POST.get('lname')
-            # email = req.POST.get('email')
-            # # phno = req.POST.get('phno')
-            # passw = req.POST.get('pass')
-
-            # user_form = UserForm(username=username,first_name=fname,last_name=lname,email=email,password=passw)
             # Save User Form to Database
             user = user_form.save()
             # Hash the password

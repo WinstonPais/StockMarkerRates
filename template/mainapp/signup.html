@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-{% load staticfiles %}
+{% load static %}
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
@@ -31,31 +31,31 @@
         </nav>
       </div>
     </header>
-    <form class="form-signin" style="padding-top: 4em;" action="{% url 'mainapp:SignUpPage' %}" method="post">
+    <form class="form-signin" style="padding-top: 4em;" action="{% url 'mainapp:SignUpPage' %}" method="POST">
       {% csrf_token %}
       <div class="form-label-group" >
         <input type="text" style="background-color: #242222; color:#fff;" name="username" class="form-control abc" placeholder="Username" required="" autofocus="">
-        <label style="color:#fff;" for="username">User Name </label>
+        <label style="color:#5a6063;" for="username">User Name </label>
       </div>
       <div class="form-label-group" >
         <input type="text" style="background-color: #242222; color:#fff;" name="first_name" class="form-control abc" placeholder="First Name" required="" autofocus="">
-        <label style="color:#fff;" for="first_name">First Name</label>
+        <label style="color:#5a6063;" for="first_name">First Name</label>
       </div>
       <div class="form-label-group" >
         <input type="text" style="background-color: #242222; color:#fff;" name="last_name" class="form-control abc" placeholder="Last Name" autofocus="">
-        <label style="color:#fff;" for="last_name">Last Name</label>
+        <label style="color:#5a6063;" for="last_name">Last Name</label>
       </div>
       <div class="form-label-group" >
         <input type="email" style="background-color: #242222; color:#fff;" name="email" class="form-control abc" placeholder="Email" required="" autofocus="">
-        <label style="color:#fff;" for="email">Email</label>
+        <label style="color:#5a6063;" for="email">Email</label>
       </div>
       <div class="form-label-group" >
         <input id="txtPassword" type="password" style="background-color: #242222; color:#fff;" name="password" class="form-control abc" placeholder="Password" pattern=".{7,}" required="" autofocus="">
-        <label style="color:#fff;" for="password">Password</label>
+        <label style="color:#5a6063;" for="password">Password</label>
       </div>
       <div class="form-label-group" >
         <input id="txtConfirmPassword" type="password" style="background-color: #242222; color:#fff;" name="cpass" class="form-control abc" placeholder="Confirm Password" pattern=".{7,}" required="" autofocus="">
-        <label style="color:#fff;" for="cpass">Confirm Password</label>
+        <label style="color:#5a6063;" for="cpass">Confirm Password</label>
       </div>
       <center><button class="btn btn-lg btn-primary btn-block" style="width: 35%;" onclick="return Validate()" type="submit">Sign up</button></center>
     </form>

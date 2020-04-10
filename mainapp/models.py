@@ -1,5 +1,5 @@
 from django.db import models
-# from django.contrib.auth.models import User
+from django.contrib.auth.models import User
 # Create your models here.
 
 # class UserProfileInfo(models.Model):
@@ -17,3 +17,13 @@ from django.db import models
     # def __str__(self):
     #     # Built-in attribute of django.contrib.auth.models.User !
     #     return self.user.username
+
+class UserStockDetails(models.Model):
+    # user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user')
+    purchaseDate = models.DateField()
+    symbol = models.CharField(max_length=10)
+    quantity = models.IntegerField()
+
+    def __str__(self):
+        return str(self.purchaseDate)+" "+self.symbol+" "+str(self.quantity)
