@@ -14,6 +14,20 @@ def test(symb):
     except:
         return False
 
+def getstockdetails(symb,purchasedate):
+    tdata = yf.Ticker(symb)
+    tinfo = tdata.info
+    try:
+        website=tinfo['website']
+    except:
+        website=None
+    tdf2 = tdata.history(period='1d',start=(purchaseDate-datetime.timedelta(days=7)).isoformat()[:10],end=purchaseDate.isoformat()[:10])
+    costprice = tdf2['Close'].iloc[-1]
+    currency = tinfo['currency']
+    shortName = tinfo['shortName']
+    return website,costprice,currency,shortName
+    
+    
 def getmystocks(username):
     # for c in UserStockDetails.objects.raw('SELECT * FROM mainapp_userstockdetails where user=%s',[username]):
     #     print(c)
@@ -21,21 +35,25 @@ def getmystocks(username):
     for c in UserStockDetails.objects.all().filter(user=username):
         symb = c.symbol
         tdata = yf.Ticker(symb)
-        tinfo = tdata.info
-        cname = tinfo['shortName']
-        currency = tinfo['currency']
-        try:
-            website=tinfo['website']
-        except:
-            website=None
+        # tinfo = tdata.info
+        # cname = tinfo['shortName']
+        shortName = c.shortName
+        # currency = tinfo['currency']
+        currency = c.currency
+        # try:
+        #     website=tinfo['website']
+        # except:
+        #     website=None
+        website = c.website
         quantity = c.quantity
         today = datetime.datetime.today().isoformat()
         tdf = tdata.history(period='1d',start=(datetime.date.today()-datetime.timedelta(days=7)).isoformat()[:10],end=today[:10])
         lastprice = tdf['Close'].iloc[-1]
-        tdf2 = tdata.history(period='1d',start=(c.purchaseDate-datetime.timedelta(days=7)).isoformat()[:10],end=c.purchaseDate.isoformat()[:10])
-        costprice = tdf2['Close'].iloc[-1]
+        # tdf2 = tdata.history(period='1d',start=(c.purchaseDate-datetime.timedelta(days=7)).isoformat()[:10],end=c.purchaseDate.isoformat()[:10])
+        # costprice = tdf2['Close'].iloc[-1]
+        costprice = c.costprice
         profit=quantity*(lastprice-costprice)
-        temp=[cname,symb,quantity,currency,lastprice,profit,website]
+        temp=[shortName,symb,quantity,currency,lastprice,profit,website]
         retlst.append(temp)
     return retlst
 
