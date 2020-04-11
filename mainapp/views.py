@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .forms import UserForm
-from mainapp.sample import yfinancesymb,test,getmystocks
+from mainapp.sample import yfinancesymb,test,getmystocks,getstockdetails
 from mainapp.models import UserStockDetails
 
 from django.contrib.auth import authenticate, login, logout
@@ -58,11 +58,12 @@ def addstock(req):
         purchasedate = req.POST.get('pdate')
         quantity = req.POST.get('quantity')
         current_user = req.user
+        website,costprice,currency,shortName = getstockdetails(symbol,purchasedate)
         if(test(symbol)):
             today = datetime.datetime.today().isoformat()
             if(purchasedate<=today):
                 print(current_user,symbol,purchasedate,quantity)
-                tx=UserStockDetails(user=current_user,purchaseDate=purchasedate,symbol=symbol,quantity=quantity)
+                tx=UserStockDetails(user=current_user,purchaseDate=purchasedate,symbol=symbol,quantity=quantity,website=website,costprice=costprice,currency=currency,shortName=shortName)
                 tx.save()
             else:
                 messages.error(req,'Invalid Date')
