@@ -49,9 +49,21 @@
                   <p><strong>Quantity: </strong>{{ stock|ind:2 }}</p>
                   <p><strong>Current Value: </strong>{{ stock|ind:3 }} {{ stock|ind:4 }}</p>
                   <p style="color:#00c400"><strong style="color:#ffffff">Profit: </strong>{{ stock|ind:3 }} {{ stock|ind:5 }}</p>
+
                   {% if stock|ind:6 != None %}
                     <a href="{{ stock|ind:6 }}" class="card-link">Company Website</a>
                   {% endif %}
+                  <div class="row" style="padding-top: .75em;">
+                    <div class="" style="padding-left: 1em;">
+                      <button type="button" class="btn btn-warning " >Update</button>
+                    </div>
+                    <div class="" style="padding-left: 2.5em;">
+                      <form action="{% url 'mainapp:delPage' pk=stock|ind:7 %}" method="post">
+                        {% csrf_token %}
+                        <input type="submit" onclick="return confirm('Are you sure to delete?')" class="btn btn-danger" value="Delete">
+                      </form>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -64,9 +76,18 @@
                   <p><strong>Quantity: </strong>{{ stock|ind:2 }}</p>
                   <p><strong>Current Value: </strong>{{ stock|ind:3 }} {{ stock|ind:4 }}</p>
                   <p style="color:#ed0505"><strong style="color:#ffffff">Profit: </strong>{{ stock|ind:3 }} {{ stock|ind:5 }}</p>
+
                   {% if stock|ind:6 != None %}
                     <a href="{{ stock|ind:6 }}" class="card-link">Company Website</a>
                   {% endif %}
+                  <div class="row" style="padding-top: .75em;">
+                    <div class="" style="padding-left: 1em;">
+                      <button type="button" class="btn btn-warning " >Update</button>
+                    </div>
+                    <div class="" style="padding-left: 2.5em;">
+                      <button type="button" onclick="confirmation()" class="btn btn-danger">Delete</button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -79,7 +100,7 @@
               <div id="addstock" class="card-body blackshadow">
                 <div align="center" style="z-index: 1;">
                   <h5 >Add Stock</h5>
-                  <img style="height: 90%;width: 70%;padding-top: 10px;padding-bottom: 10px;" src="{% static "mainapp/images/blueplus.png" %}"alt="">
+                  <img style="height: 90%;width: 70%;padding-top: 35px;padding-bottom: 35px;" src="{% static "mainapp/images/blueplus.png" %}"alt="">
                 </div>
               </div>
             </div>
@@ -102,6 +123,7 @@
         headOne.classList.add("blackshadow");
         headOne.classList.remove("blueshadow");
       })
+
     </script>
   </body>
 </html>

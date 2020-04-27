@@ -10,4 +10,5 @@ urlpatterns=[
     url(r'^welcome/$',views.welcome,name='welcomePage'),
     url(r'^result/$',views.result,name='resultPage'),
     path('addstock/', views.addstock, name='addstockPage'),
+    path('delete/<int:pk>/', views.dele, name='delPage'),
 ]

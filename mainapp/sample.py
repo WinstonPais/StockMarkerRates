@@ -5,6 +5,7 @@ import mplcursors
 from bokeh.embed import components
 from bokeh.plotting import figure, output_file, show
 from mainapp.models import UserStockDetails
+# from datetime import datetime
 
 def test(symb):
     try:
@@ -14,20 +15,23 @@ def test(symb):
     except:
         return False
 
-def getstockdetails(symb,purchasedate):
+def getstockdetails(symb,purchaseDate):
     tdata = yf.Ticker(symb)
     tinfo = tdata.info
     try:
         website=tinfo['website']
     except:
         website=None
-    tdf2 = tdata.history(period='1d',start=(purchaseDate-datetime.timedelta(days=7)).isoformat()[:10],end=purchaseDate.isoformat()[:10])
+    # print(purchaseDate)
+    tem=datetime.datetime.strptime(purchaseDate, '%Y-%m-%d').date()-datetime.timedelta(days=7)
+    # print((tem).isoformat()[:10])
+    tdf2 = tdata.history(period='1d',start=(tem).isoformat()[:10],end=purchaseDate)
     costprice = tdf2['Close'].iloc[-1]
     currency = tinfo['currency']
     shortName = tinfo['shortName']
     return website,costprice,currency,shortName
-    
-    
+
+
 def getmystocks(username):
     # for c in UserStockDetails.objects.raw('SELECT * FROM mainapp_userstockdetails where user=%s',[username]):
     #     print(c)
@@ -35,15 +39,8 @@ def getmystocks(username):
     for c in UserStockDetails.objects.all().filter(user=username):
         symb = c.symbol
         tdata = yf.Ticker(symb)
-        # tinfo = tdata.info
-        # cname = tinfo['shortName']
         shortName = c.shortName
-        # currency = tinfo['currency']
         currency = c.currency
-        # try:
-        #     website=tinfo['website']
-        # except:
-        #     website=None
         website = c.website
         quantity = c.quantity
         today = datetime.datetime.today().isoformat()
@@ -52,8 +49,8 @@ def getmystocks(username):
         # tdf2 = tdata.history(period='1d',start=(c.purchaseDate-datetime.timedelta(days=7)).isoformat()[:10],end=c.purchaseDate.isoformat()[:10])
         # costprice = tdf2['Close'].iloc[-1]
         costprice = c.costprice
-        profit=quantity*(lastprice-costprice)
-        temp=[shortName,symb,quantity,currency,lastprice,profit,website]
+        profit=round(quantity*(lastprice-costprice),2)
+        temp=[shortName,symb,quantity,currency,lastprice,profit,website,c.id]
         retlst.append(temp)
     return retlst
 
@@ -101,3 +98,7 @@ def yfinancesymb(symb):
     # print(tinfo['shortName'])
     # print(tinfo['currency'])
     return script, div
+
+# orders=Order.objects.all().filter(user=re.user)
+# for i in orders:
+#     print(i.items)

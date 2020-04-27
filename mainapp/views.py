@@ -1,15 +1,17 @@
-from django.shortcuts import render
+from django.shortcuts import render,get_object_or_404
 from .forms import UserForm
 from mainapp.sample import yfinancesymb,test,getmystocks,getstockdetails
 from mainapp.models import UserStockDetails
 
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect, HttpResponse
-from django.urls import reverse
+from django.urls import reverse,reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.shortcuts import redirect
+from django.views.generic import DeleteView
 import datetime
+
 
 # Create your views here.
 def index(req):
@@ -51,6 +53,22 @@ def welcome(req):
     mystocks=getmystocks(req.user)
     return render(req,'mainapp/welcome.html',{'mystocks':mystocks})
 
+# @login_required
+# class WelcomeView(DeleteView):
+#
+#     mystocks=getmystocks(user)
+#     context_object_name = 'mainapp/welcome.html'
+#     context['mystocks']=mystocks
+#     model = UserStockDetails
+#     success_url = reverse_lazy("mainapp:welcomePage")
+
+def dele(req,**kwargs):
+    print(kwargs['pk'])
+    obj=get_object_or_404(UserStockDetails,id=kwargs['pk'])
+    if req.method == 'POST':
+        obj.delete()
+    return HttpResponseRedirect(reverse('mainapp:welcomePage'))
+
 @login_required
 def addstock(req):
     if req.method == 'POST':
@@ -58,13 +76,15 @@ def addstock(req):
         purchasedate = req.POST.get('pdate')
         quantity = req.POST.get('quantity')
         current_user = req.user
-        website,costprice,currency,shortName = getstockdetails(symbol,purchasedate)
+
         if(test(symbol)):
+            website,costprice,currency,shortName = getstockdetails(symbol,purchasedate)
             today = datetime.datetime.today().isoformat()
             if(purchasedate<=today):
                 print(current_user,symbol,purchasedate,quantity)
                 tx=UserStockDetails(user=current_user,purchaseDate=purchasedate,symbol=symbol,quantity=quantity,website=website,costprice=costprice,currency=currency,shortName=shortName)
                 tx.save()
+                messages.success(req, str(shortName)+" "+str(symbol)+' Added')
             else:
                 messages.error(req,'Invalid Date')
 
