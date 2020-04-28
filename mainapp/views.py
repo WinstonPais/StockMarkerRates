@@ -1,5 +1,5 @@
 from django.shortcuts import render,get_object_or_404
-from .forms import UserForm
+from .forms import UserForm,UpdateForm
 from mainapp.sample import yfinancesymb,test,getmystocks,getstockdetails
 from mainapp.models import UserStockDetails
 
@@ -62,11 +62,35 @@ def welcome(req):
 #     model = UserStockDetails
 #     success_url = reverse_lazy("mainapp:welcomePage")
 
-class StockUpdateView(UpdateView):
-    template_name = "mainapp/update_stock.html"
-    fields = ("purchaseDate","quantity")
-    model = UserStockDetails
+# class StockUpdateView(UpdateView):
+#     template_name = "mainapp/update_stock.html"
+#     fields = ("purchaseDate","quantity")
+#     model = UserStockDetails
 
+@login_required
+def StockUpdateView(req,**kwargs):
+    if req.method == 'POST':
+        print("Hello")
+        update_form = UpdateForm(data=req.POST)
+        if update_form.is_valid():
+            a=req.POST.get('purchaseDate')
+            b=req.POST.get('quantity')
+            obj2=get_object_or_404(UserStockDetails,id=kwargs['pk'])
+            print(a,b)
+            obj2.purchaseDate=a
+            obj2.quantity=b
+            obj2.save()
+            return HttpResponseRedirect(reverse('mainapp:welcomePage'))
+
+    c={}
+    obj=get_object_or_404(UserStockDetails,id=kwargs['pk'])
+    c['date']=str(obj.purchaseDate)
+    c['q']=obj.quantity
+    c['pkk']=kwargs['pk']
+
+    return render(req,'mainapp/update_stock.html',c)
+
+@login_required
 def dele(req,**kwargs):
     print(kwargs['pk'])
     obj=get_object_or_404(UserStockDetails,id=kwargs['pk'])

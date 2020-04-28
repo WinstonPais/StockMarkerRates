@@ -17,18 +17,21 @@
     </style>
   </head>
   <body>
-    <div class="container">
-      <form method="POST">
+    <div  class="container">
+      <form action="{% url 'mainapp:update' pk=pkk %}" method="POST">
       {% csrf_token %}
       <div class="form-label-group" >
-        <input type="date" style="background-color: #242222; color:#fff;" name="pdate" class="form-control abc" placeholder="First Name" required="" autofocus="">
+        <input type="date" style="background-color: #242222; color:#fff;" value="{{ date }}" name="purchaseDate" class="form-control abc" placeholder="First Name" required="" autofocus="">
         <label style="color:#5a6063;" for="pdate">Purchase Date</label>
       </div>
       <div class="form-label-group" >
-        <input type="text" style="background-color: #242222; color:#fff;" name="quantity" class="form-control abc" placeholder="Last Name" autofocus="">
+        <input type="text" style="background-color: #242222; color:#fff;" value="{{ q }}" name="quantity" class="form-control abc" placeholder="Last Name" autofocus="">
         <label style="color:#5a6063;" for="quantity">Quantity</label>
       </div>
-      <center><a class="btn btn-lg btn-primary btn-block" style="width: 35%;" href="{% url 'mainapp:welcomePage' %}" type="submit">Update</a></center>
+      <!-- {{ form.as_p }} -->
+      <center>
+        <input class="btn btn-lg btn-primary btn-block" style="width: 35%;" type="submit" value="Update">
+      </center>
 
       </form>
     </div>
