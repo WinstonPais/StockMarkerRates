@@ -11,4 +11,5 @@ urlpatterns=[
     url(r'^result/$',views.result,name='resultPage'),
     path('addstock/', views.addstock, name='addstockPage'),
     path('delete/<int:pk>/', views.dele, name='delPage'),
+    path('update/<int:pk>/',views.StockUpdateView.as_view(),name='update'),
 ]

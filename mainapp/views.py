@@ -9,7 +9,7 @@ from django.urls import reverse,reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.shortcuts import redirect
-from django.views.generic import DeleteView
+from django.views.generic import UpdateView
 import datetime
 
 
@@ -61,6 +61,11 @@ def welcome(req):
 #     context['mystocks']=mystocks
 #     model = UserStockDetails
 #     success_url = reverse_lazy("mainapp:welcomePage")
+
+class StockUpdateView(UpdateView):
+    template_name = "mainapp/update_stock.html"
+    fields = ("purchaseDate","quantity")
+    model = UserStockDetails
 
 def dele(req,**kwargs):
     print(kwargs['pk'])
