@@ -19,12 +19,8 @@ def index(req):
 
 def user_logIn(request):
     if request.method == 'POST':
-        # First get the username and password supplied
-        # print("hello")
         username = request.POST.get('username')
         password = request.POST.get('password')
-        # print(username,password)
-        # Django's built-in authentication function:
         user = authenticate(username=username, password=password)
 
         # If we have a user
@@ -42,7 +38,6 @@ def user_logIn(request):
         else:
             print("Someone tried to login and failed.")
             print("They used username: {} and password: {}".format(username,password))
-            # return HttpResponse("Invalid login details supplied.")
             messages.error(request,'Incorrect username or password')
             return redirect('mainapp:LogInPage')
     else:
@@ -52,20 +47,6 @@ def user_logIn(request):
 def welcome(req):
     mystocks=getmystocks(req.user)
     return render(req,'mainapp/welcome.html',{'mystocks':mystocks})
-
-# @login_required
-# class WelcomeView(DeleteView):
-#
-#     mystocks=getmystocks(user)
-#     context_object_name = 'mainapp/welcome.html'
-#     context['mystocks']=mystocks
-#     model = UserStockDetails
-#     success_url = reverse_lazy("mainapp:welcomePage")
-
-# class StockUpdateView(UpdateView):
-#     template_name = "mainapp/update_stock.html"
-#     fields = ("purchaseDate","quantity")
-#     model = UserStockDetails
 
 @login_required
 def StockUpdateView(req,**kwargs):
@@ -111,7 +92,9 @@ def addstock(req):
             today = datetime.datetime.today().isoformat()
             if(purchasedate<=today):
                 print(current_user,symbol,purchasedate,quantity)
-                tx=UserStockDetails(user=current_user,purchaseDate=purchasedate,symbol=symbol,quantity=quantity,website=website,costprice=costprice,currency=currency,shortName=shortName)
+                tx=UserStockDetails(user=current_user,purchaseDate=purchasedate,\
+                symbol=symbol,quantity=quantity,website=website,\
+                costprice=costprice,currency=currency,shortName=shortName)
                 tx.save()
                 messages.success(req, str(shortName)+" "+str(symbol)+' Added')
             else:
@@ -126,10 +109,8 @@ def addstock(req):
 def result(req):
     if req.method == 'POST':
         script, div = yfinancesymb(req.POST['symbol'])
-    # myDict={'script':str(resultString)}
     return render(req, 'mainapp/result.html',
             {'script' : script , 'div' : div} )
-    # return render(req,'mainapp/result.html')
 
 @login_required
 def user_logout(request):

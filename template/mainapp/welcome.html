@@ -34,11 +34,7 @@
 
       <h2 style="color:white" >My Stocks</h2>
       {# <p  class="font-weight-light" >My Stocks</p> #}
-
       <div style="padding-top: 2em;padding-bottom: 2em;" class="row row-cols-lg-4 row-cols-md-3 row-cols-sm-2">
-
-
-
         {% for stock in mystocks %}
           {% if stock|ind:5 > 0 %}
             <div class="col mb-3 customcard" style="padding-bottom: 1em;">
@@ -82,7 +78,7 @@
                   {% endif %}
                   <div class="row" style="padding-top: .75em;">
                     <div class="" style="padding-left: 1em;">
-                      <button type="button" class="btn btn-warning " >Update</button>
+                      <a type="button" class="btn btn-warning" href="{% url 'mainapp:update' pk=stock|ind:7 %}">Update</a>
                     </div>
                     <div class="" style="padding-left: 2.5em;">
                       <form action="{% url 'mainapp:delPage' pk=stock|ind:7 %}" method="post">
